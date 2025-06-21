@@ -15,6 +15,10 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 ANDROID_IP_CAMERA_URL = os.getenv("ANDROID_IP_CAMERA_URL", "http://192.168.0.101:8080/video")
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "")
+TWILIO_YOUR_NUM = os.getenv("TWILIO_YOUR_NUM", "")
+TWILIO_TWILIO_NUM = os.getenv("TWILIO_TWILIO_NUM", "")
 
 class AdvancedPersonDetectionSystem:
     def __init__(self):
@@ -71,6 +75,11 @@ class AdvancedPersonDetectionSystem:
         # Initialize models
         self.initialize_models()
         self.android_ip_camera_url = ANDROID_IP_CAMERA_URL
+        self.account_sid = TWILIO_ACCOUNT_SID
+        self.auth_token = TWILIO_AUTH_TOKEN
+        self.your_num = TWILIO_YOUR_NUM
+        self.twilio_num = TWILIO_TWILIO_NUM
+        self.twilio_enabled = bool(self.account_sid and self.auth_token and self.your_num and self.twilio_num)
 
     def initialize_models(self):
         try:
