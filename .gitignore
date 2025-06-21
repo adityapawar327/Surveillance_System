@@ -1,0 +1,15 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Gradio cache
+.gradio/
+
+# Model weights
+*.pt
+
+# Surveillance outputs
+surveillance_outputs/
+
+# Environment variables
+.env
