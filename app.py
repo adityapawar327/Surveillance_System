@@ -249,5 +249,9 @@ if __name__ == "__main__":
         server_port=7860, 
         share=True,  # Enable public link
         show_error=True,
-        debug=True  # Added debug mode
+        debug=True,  # Added debug mode
+        auth=[
+            ("admin", "admin123"),
+            ("user", "user123")
+        ]
     )
