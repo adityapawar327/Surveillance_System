@@ -1,4 +1,5 @@
 from detection_system import AdvancedPersonDetectionSystem
+from database import log_detection_event, smart_compress_video, upload_video_to_s3
 import gradio as gr
 import datetime
 from collections import deque
@@ -28,13 +29,50 @@ def update_settings(confidence, area_threshold, patience, detection_thresh):
 
 def get_frame():
     """Get current frame and status"""
+    import platform
+    import subprocess
+    cpu_info = platform.processor() or platform.machine()
+    gpu_info = "Unknown"
+    try:
+        import torch
+        if torch.cuda.is_available():
+            gpu_info = torch.cuda.get_device_name(0)
+        else:
+            try:
+                result = subprocess.check_output(['nvidia-smi', '--query-gpu=name', '--format=csv,noheader'], encoding='utf-8')
+                gpu_info = result.strip().split('\n')[0]
+            except Exception:
+                gpu_info = "No GPU detected"
+    except Exception:
+        gpu_info = "PyTorch not installed"
     if detector.running and detector.cap and detector.cap.isOpened():
         frame, status = detector.process_frame()
         if frame is not None:
+            # Add CPU and GPU info to the analytics
+            status["🖥️ CPU Info"] = cpu_info
+            status["🖥️ GPU Info"] = gpu_info
             return frame, status
         else:
+            status["🖥️ CPU Info"] = cpu_info
+            status["🖥️ GPU Info"] = gpu_info
             return None, status
-    return None, {"Status": "Camera not running", "Message": "Please start camera first"}
+    # Show all analytics fields even if camera is not running
+    return None, {
+        "🏠 Room Occupied": False,
+        "👥 Current Persons": 0,
+        "📊 Detection Score": "0/8",
+        "📈 Total Detections": 0,
+        "📹 Recording": False,
+        "🎯 FPS": 0,
+        "📱 SMS Alerts": detector.twilio_enabled,
+        "🔧 Model": "YOLOv8",
+        "⚡ Confidence": detector.confidence_threshold,
+        "🎚️ Area Threshold": detector.area_threshold,
+        "📷 Camera Source": "Not Connected",
+        "✅ Status": "Stopped",
+        "🖥️ CPU Info": cpu_info,
+        "🖥️ GPU Info": gpu_info
+    }
 
 def test_sms():
     if detector.twilio_enabled:
@@ -124,7 +162,9 @@ with gr.Blocks(title="Advanced Person Detection with YOLO", theme=gr.themes.Soft
                     "⚡ Confidence": 0.5,
                     "🎚️ Area Threshold": 2000,
                     "📷 Camera Source": "Not Connected",
-                    "✅ Status": "Stopped"
+                    "✅ Status": "Stopped",
+                    "🖥️ CPU Info": "Fetching...",
+                    "🖥️ GPU Info": "Fetching..."
                 })
     
     with gr.Tab("📱 SMS Alerts"):

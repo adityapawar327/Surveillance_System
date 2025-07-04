@@ -11,6 +11,7 @@ from supervision import ByteTrack, Detections
 import logging
 import threading
 from dotenv import load_dotenv
+from database import log_detection_event, smart_compress_video, upload_video_to_s3
 
 # Load environment variables from .env file
 load_dotenv()
@@ -341,11 +342,33 @@ class AdvancedPersonDetectionSystem:
                     if time.time() - self.initial_time >= self.patience:
                         self.status = False
                         exit_time = datetime.datetime.now().strftime("%A, %I:%M:%S %p %d %B %Y")
+                        video_path = None
                         if self.out:
                             self.out.release()
+                            video_path = f"{self.output_dir}/{self.entry_time}.mp4"
                         self.initial_time = None
-                        body = f"🚨 Security Alert:\n👤 Person Entered: {self.entry_time}\n🚪 Person Left: {exit_time}\n📹 Video saved to {self.output_dir}"
+                        # Compress the video
+                        compressed_path = video_path
+                        if video_path and os.path.exists(video_path):
+                            smart_compress_video(video_path)
+                            # By default, smart_compress_video outputs to <name>_compressed<ext>
+                            name, ext = os.path.splitext(video_path)
+                            compressed_path = f"{name}_compressed{ext}"
+                            if not os.path.exists(compressed_path):
+                                compressed_path = video_path  # fallback
+                        # Upload to S3
+                        video_url = compressed_path
+                        if compressed_path and os.path.exists(compressed_path):
+                            s3_url = upload_video_to_s3(compressed_path)
+                            if s3_url:
+                                video_url = s3_url
+                        body = f"🚨 Security Alert:\n👤 Person Entered: {self.entry_time}\n🚪 Person Left: {exit_time}\n📹 Video: {video_url if video_url else 'Not saved'}"
                         self.send_message(body)
+                        # Log to MongoDB
+                        try:
+                            log_detection_event(self.entry_time, exit_time, video_url, sms_sent=True)
+                        except Exception as e:
+                            logging.error(f"Failed to log event to MongoDB: {e}")
                         logging.info(f"Person left at: {exit_time}")
             elif self.status and sum(self.de) > self.detection_thresh * 0.3:
                 self.initial_time = None

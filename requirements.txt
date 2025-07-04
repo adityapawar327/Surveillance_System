@@ -8,3 +8,4 @@ supervision
 gradio
 twilio
 numpy
+boto3

@@ -12,7 +12,11 @@ A modern, real-time surveillance system using YOLOv8 and ByteTracker for accurat
 - **Twilio SMS Alerts**: Get instant notifications when someone enters or leaves the monitored area.
 - **GPU Acceleration**: Automatically uses your NVIDIA GPU for maximum performance (if available).
 - **Customizable Settings**: Adjust detection confidence, area threshold, patience, and more from the UI.
-- **Automatic Video Saving**: Output video during detection events is automatically saved on your device for later review.
+- **Automatic Video Saving**: Output video during detection events is automatically saved on your device for later review in a folder named `surveillance_outputs` (created automatically if it doesn't exist).
+- **Amazon S3 Cloud Upload**: After each detection event, the recorded video is uploaded from the local `surveillance_outputs` folder to your configured Amazon S3 bucket using `boto3`. The public S3 URL for each video is sent to you via Twilio SMS for instant remote access, so you can view your surveillance videos from anywhere.
+- **Advanced Video Compression**: Videos are automatically compressed before upload using smart, multi-codec compression (H.265/HEVC, AV1, VP9, and advanced H.264/x264) for optimal quality and size. The system auto-selects the best codec and compression level based on file size and your target reduction.
+- **Concurrent & Optimized S3 Uploads**: Supports multi-threaded, thread-safe, and multipart S3 uploads for fast, reliable cloud storage. Batch upload all videos in `surveillance_outputs` with a single function call. Upload progress tracking is available.
+- **Detection Event Logging**: All detection events (entry/exit times, video URL, SMS status) are logged to a daily log file for audit and review.
 
 ---
 
@@ -39,6 +43,41 @@ python app.py
 ```
 
 - Access the web UI at: [http://localhost:7860](http://localhost:7860)
+
+---
+
+## ☁️ Cloud Video Storage with Amazon S3
+- **Automatic S3 Upload**: After each detection event, the recorded video is uploaded from the local `surveillance_outputs` folder to your configured Amazon S3 bucket using `boto3`.
+- **Public Video Links**: The S3 public URL for each video is sent to you via Twilio SMS for instant remote access.
+- **Batch Upload & Concurrency**: Upload all videos in the `surveillance_outputs` folder to S3 concurrently using the provided utility function. Large files use optimized multipart upload for speed and reliability.
+- **Upload Progress Tracking**: Optional progress callback for real-time upload feedback.
+
+### S3 & Compression Setup
+1. Add your AWS credentials and bucket info to the `.env` file:
+   ```env
+   AWS_ACCESS_KEY_ID=your-access-key-id
+   AWS_SECRET_ACCESS_KEY=your-secret-access-key
+   AWS_S3_BUCKET=your-bucket-name
+   AWS_S3_REGION=your-region
+   ```
+2. Install requirements:
+   ```sh
+   pip install -r requirements.txt
+   ```
+3. Videos are automatically compressed and uploaded after each event. You can use the `upload_all_videos_in_surveillance_outputs()` function to upload all existing videos, or `smart_compress_video()` to compress any video with optimal settings.
+
+#### Example: Smart Compression & Upload
+```python
+from database import smart_compress_video, upload_video_to_s3
+
+# Compress a video with smart settings
+temp_path = 'surveillance_outputs/event1.mp4'
+smart_compress_video(temp_path)
+
+# Upload to S3
+url = upload_video_to_s3(temp_path)
+print('S3 URL:', url)
+```
 
 ---
 
@@ -85,6 +124,7 @@ python app.py
 ```
 ├── app.py                # Gradio web interface
 ├── detection_system.py   # Detection and tracking logic
+├── database.py           # Video compression, S3 upload, logging utilities
 ├── requirements.txt      # All dependencies
 ├── README.md             # This file
 └── yolov8n.pt            # YOLOv8n weights (auto-downloaded)
@@ -112,14 +152,13 @@ MIT License
 
 ## 🖼️ Screenshots
 
-### Login Page
-![Login Page](screenshots/Screenshot%202025-07-04%20193036.png)
 
-### Live Detection & Analytics
-![Live Detection](screenshots/Screenshot%202025-07-04%20194155.png)
+![ ](screenshots/Screenshot%202025-07-04%20194155.png)
 
-### SMS Alerts Configuration
-![SMS Alerts](screenshots/Screenshot%202025-07-04%20194243.png)
+![ ](screenshots/Screenshot%202025-07-04%20194243.png)
+
+![ ](screenshots/Screenshot%202025-07-04%20193036.png)
+
 
 ---
 
