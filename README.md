@@ -1,4 +1,4 @@
-# Advanced Person Detection Surveillance System
+# Watch Out: Advanced Person Detection Surveillance System
 
 A modern, real-time surveillance system for accurate person detection, tracking, and event-based video management. Features a web interface, cloud storage, SMS alerts, advanced video compression, and robust logging.
 
@@ -21,6 +21,7 @@ A modern, real-time surveillance system for accurate person detection, tracking,
 ---
 
 ## 🖼️ Demo Screenshots
+
 ![Login Page](screenshots/Screenshot%202025-07-04%20194243.png)
 ![SMS Setup](screenshots/Screenshot%202025-07-04%20194155.png)
 ![Live Detection](screenshots/Screenshot%202025-07-04%20193036.png)
@@ -149,6 +150,7 @@ MIT License
 ---
 
 ## 🙏 Credits
+- Project by **Aditya Pawar**
 - [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics)
 - [Supervision/ByteTrack](https://github.com/roboflow/supervision)
 - [Gradio](https://gradio.app/)

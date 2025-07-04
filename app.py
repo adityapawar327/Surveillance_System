@@ -85,8 +85,8 @@ def toggle_custom_url(camera_type):
     return gr.update(visible=(camera_type == "Custom URL"))
 
 # Create advanced Gradio interface
-with gr.Blocks(title="Advanced Person Detection with YOLO", theme=gr.themes.Soft()) as app:
-    gr.Markdown("# 🤖 Advanced Person Detection Surveillance System")
+with gr.Blocks(title="Watch Out: Advanced Person Detection with YOLO", theme=gr.themes.Soft()) as app:
+    gr.Markdown("# 🤖 Watch Out: Advanced Person Detection Surveillance System")
     gr.Markdown("Powered by **YOLOv8** and **ByteTracker** for superior accuracy and performance")
     
     with gr.Tab("🎥 Live Detection"):
