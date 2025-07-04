@@ -1,6 +1,6 @@
 # 🚨 Advanced Person Detection Surveillance System
 
-A modern, real-time surveillance system using YOLOv8 and ByteTracker for accurate person detection and tracking. Features a Gradio web interface, Twilio SMS alerts, and GPU acceleration support.
+A modern, real-time surveillance system using YOLOv8 and ByteTracker for accurate person detection and tracking. Features a Gradio web interface, Twilio SMS alerts, GPU acceleration support, and automatic saving of output video during detection events.
 
 ---
 
@@ -12,6 +12,7 @@ A modern, real-time surveillance system using YOLOv8 and ByteTracker for accurat
 - **Twilio SMS Alerts**: Get instant notifications when someone enters or leaves the monitored area.
 - **GPU Acceleration**: Automatically uses your NVIDIA GPU for maximum performance (if available).
 - **Customizable Settings**: Adjust detection confidence, area threshold, patience, and more from the UI.
+- **Automatic Video Saving**: Output video during detection events is automatically saved on your device for later review.
 
 ---
 
@@ -106,3 +107,36 @@ MIT License
 - [Supervision/ByteTrack](https://github.com/roboflow/supervision)
 - [Gradio](https://gradio.app/)
 - [Twilio](https://www.twilio.com/)
+
+---
+
+## 🖼️ Screenshots
+
+### Login Page
+![Login Page](screenshots/3_login.png)
+
+### Live Detection & Analytics
+![Live Detection](screenshots/1_live_detection.png)
+
+### SMS Alerts Configuration
+![SMS Alerts](screenshots/2_sms_alerts.png)
+
+---
+
+## ⚠️ Why Isn't This Deployed Online?
+This project is not deployed as a public web app for the following reasons:
+
+- **Deep Learning & GPU Acceleration**: The system relies on real-time deep learning inference (YOLOv8) and multi-object tracking, which require significant computational resources. Free or low-cost cloud servers typically do not provide the necessary GPU acceleration, resulting in poor performance or inability to run the model at all.
+- **Security & Privacy**: Surveillance systems process sensitive video feeds. For privacy and security, it is strongly recommended to run this application locally on your own trusted hardware, rather than uploading your camera streams to a third-party server.
+
+---
+
+## 🖥️ System Requirements & Installation
+
+### Minimum System Requirements
+- **Operating System**: Windows 10/11, Ubuntu 20.04+, or macOS (limited, CPU only)
+- **Python**: Version 3.9 or higher
+- **RAM**: 8 GB (16 GB recommended for smooth operation)
+- **GPU**: NVIDIA GPU with CUDA support (recommended for real-time performance)
+- **CUDA Toolkit**: Properly installed CUDA drivers (if using GPU)
+- **Free Disk Space**: At least 2 GB for dependencies and video outputs
