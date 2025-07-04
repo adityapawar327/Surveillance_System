@@ -113,13 +113,13 @@ MIT License
 ## 🖼️ Screenshots
 
 ### Login Page
-![Login Page](screenshots/3_login.png)
+![Login Page](screenshots/Screenshot%202025-07-04%20193036.png)
 
 ### Live Detection & Analytics
-![Live Detection](screenshots/1_live_detection.png)
+![Live Detection](screenshots/Screenshot%202025-07-04%20194155.png)
 
 ### SMS Alerts Configuration
-![SMS Alerts](screenshots/2_sms_alerts.png)
+![SMS Alerts](screenshots/Screenshot%202025-07-04%20194243.png)
 
 ---
 
